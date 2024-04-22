@@ -1,0 +1,29 @@
+.error-card {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #ffcccc;
+    border: 1px solid #ff6666;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000; // Ensure it's above other elements
+  
+    p {
+      margin: 0;
+      font-size: 14px;
+      color: #ff3333;
+    }
+  
+    .close-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: none;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      color: #ff3333;
+    }
+  }
+  
