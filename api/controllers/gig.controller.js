@@ -62,3 +62,28 @@ export const getGigs = async (req, res, next) => {
     next(err);
   }
 };
+
+
+export const updateGigSales = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    
+    const gig = await Gig.findById(id);
+
+    if (!gig) {
+      return res.status(404).json({ message: "Gig not found" });
+    }
+
+   gig.sales = 0;
+    gig.sales += 1;
+
+    
+    await gig.save();
+
+    return res.status(200).json({ message: "Sales count updated successfully", gig });
+  } catch (error) {
+    console.error("Error updating sales count:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};

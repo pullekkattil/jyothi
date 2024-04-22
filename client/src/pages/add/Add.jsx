@@ -52,6 +52,7 @@ const Add = () => {
 
   const mutation = useMutation({
     mutationFn: (gig) => {
+      gig.sales = 0;
       return newRequest.post("/gigs", gig);
     },
     onSuccess: () => {

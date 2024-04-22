@@ -61,7 +61,11 @@ function MyGigs() {
                 <td>
                   <img className="image" src={gig.cover} alt="" />
                 </td>
-                <td>{gig.title}</td>
+                <td>
+                <Link to={`/gig/${gig._id}`} className="link">
+                {gig.title}
+                    </Link>
+                </td>
                 <td>{gig.price}</td>
                 <td>{gig.sales}</td>
                 <td>

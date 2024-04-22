@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import "./Gig.scss";
 import { Slider } from "infinite-react-carousel/lib";
 import { Link, useParams } from "react-router-dom";
@@ -9,6 +9,8 @@ import Reviews from "../../components/reviews/Reviews";
 function Gig() {
   const { id } = useParams();
   const [showPhoneNumber, setShowPhoneNumber] = useState(false);
+  const [hasPurchased, setHasPurchased] = useState(false);
+  const [userId, setUserId] = useState(null);
 
   const { isLoading, error, data } = useQuery({
     queryKey: ["gig"],
@@ -18,7 +20,11 @@ function Gig() {
       }),
   });
 
-  const userId = data?.userId;
+  useEffect(() => {
+    if (data && data.userId) {
+      setUserId(data.userId);
+    }
+  }, [data]);
 
   const {
     isLoading: isLoadingUser,
@@ -32,6 +38,23 @@ function Gig() {
       }),
     enabled: !!userId,
   });
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const { data: orders } = await newRequest.get(`/orders`);
+        const purchased = orders.some(order => {
+          return (dataUser && dataUser._id && (order.sellerId === dataUser._id || order.buyerId === dataUser._id)) && order.gigId === id;
+        });
+        setHasPurchased(purchased);
+      } catch (error) {
+        console.error("Error checking orders:", error);
+      }
+    };
+    if (dataUser && dataUser._id) {
+      fetchOrders();
+    }
+  }, [dataUser, id]);
 
   const handleContactClick = () => {
     setShowPhoneNumber(true); // Show the phone number button when "Contact Me" is clicked
@@ -50,7 +73,7 @@ function Gig() {
               Gigger {">"} Graphics & Design {">"}
             </span>
             <h1>{data.title}</h1>
-            {isLoadingUser ? (
+            {isLoadingUser || !dataUser ? (
               "loading"
             ) : errorUser ? (
               "Something went wrong!"
@@ -81,7 +104,7 @@ function Gig() {
             </Slider>
             <h2>About This Gig</h2>
             <p>{data.desc}</p>
-            {isLoadingUser ? (
+            {isLoadingUser || !dataUser ? (
               "loading"
             ) : errorUser ? (
               "Something went wrong!"
@@ -167,9 +190,17 @@ function Gig() {
                 </div>
               ))}
             </div>
-            <Link to={`/pay/${id}`}>
-              <button>Continue</button>
-            </Link>
+            {hasPurchased ? (
+              <button>
+             <Link to={`/orders`} className="link">
+             View my orders
+                 </Link>
+                 </button>
+            ) : (
+              <Link to={`/pay/${id}`}>
+                <button>Continue</button>
+              </Link>
+            )}
           </div>
         </div>
       )}

@@ -10,6 +10,7 @@ export const intent = async (req, res, next) => {
 
   
     const gig = await Gig.findById(req.params.id);
+    
 
   const paymentIntent = await stripe.paymentIntents.create({
     amount: gig.price * 100,
@@ -33,7 +34,7 @@ export const intent = async (req, res, next) => {
 
   await newOrder.save();
 
-  console.log("this is the backend client secret ",paymentIntent.client_secret);
+  
   res.status(200).send({
     clientSecret: paymentIntent.client_secret,
   });
@@ -62,7 +63,7 @@ export const getOrders = async (req, res, next) => {
 ///////
 export const confirm = async (req, res, next) => {
   try {
-    const orders = await Order.findOneAndUpdate(
+    const order = await Order.findOneAndUpdate(
       {
         payment_intent: req.body.payment_intent,
       },
@@ -73,8 +74,19 @@ export const confirm = async (req, res, next) => {
       }
     );
 
+    
+    if (order) {
+    
+      const gig = await Gig.findById(order.gigId);
+      if (gig) {
+        gig.sales += 0.5;
+        await gig.save();
+      }
+    }
+
     res.status(200).send("Order has been confirmed.");
   } catch (err) {
     next(err);
   }
 };
+
