@@ -3,10 +3,12 @@ import Message from "../models/message.model.js";
 import Conversation from "../models/conversation.model.js";
 
 export const createMessage = async (req, res, next) => {
+  const { conversationId, desc, attachment } = req.body;
   const newMessage = new Message({
-    conversationId: req.body.conversationId,
-    userId: req.userId,
-    desc: req.body.desc,
+    conversationId,
+    userId : req.userId,
+    desc,
+    attachment,
   });
   try {
     const savedMessage = await newMessage.save();

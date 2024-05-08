@@ -12,8 +12,12 @@ const MessageSchema = new Schema({
   },
   desc: {
     type: String,
-    required: true,
+    required: false,
   },
+  attachment : {
+    type: String,
+    required: false,
+  }
 },{
   timestamps:true
 });

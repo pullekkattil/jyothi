@@ -31,7 +31,7 @@ const Add = () => {
   const handleUpload = async () => {
     setUploading(true);
     try {
-      const cover = await upload(singleFile);
+      const cover = await upload(singleFile); // to upload the file
 
       const images = await Promise.all(
         [...files].map(async (file) => {
@@ -40,7 +40,7 @@ const Add = () => {
         })
       );
       setUploading(false);
-      dispatch({ type: "ADD_IMAGES", payload: { cover, images } });
+      dispatch({ type: "ADD_IMAGES", payload: { cover, images } }); // 
     } catch (err) {
       console.log(err,"the upload is not working");
     }
